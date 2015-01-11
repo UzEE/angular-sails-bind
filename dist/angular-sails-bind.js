@@ -115,11 +115,13 @@ app.factory('$sailsBind', [
             });
           });
 
-          addedElements.forEach(function (item) {
+          addedElements.forEach(function (item, idx) {
             if (!item.id) { //if is a brand new item w/o id from the database
               io.socket.post("/" + prefix + resourceName, item, function (data) {
                 if (data.hasOwnProperty("errors")) {
-                  angular.extend(
+                  $rootScope.$broadcast(resourceName, { verb: 'createError', scope: $scope.$id, errors: angular.copy(data), item: angular.copy(item) });
+                  //Don't add the item to the collection -- there was an error with it
+                  newValues.splice(idx, 1);
                 } else {
                   angular.extend(item, data);
                   $rootScope.$broadcast(resourceName, { id: item.id, verb: 'created', scope: $scope.$id, data: angular.copy(item) });
@@ -152,9 +154,18 @@ app.factory('$sailsBind', [
               if (!angular.equals(oldValue, newValue) && // is in the database and is not new
                   oldValue.id == newValue.id && //not a shift
                   oldValue.updatedAt === newValue.updatedAt) { //is not an update FROM backend
-                  $rootScope.$broadcast(resourceName, { id: oldValue.id, verb: 'updated', scope: scope.$id, data: angular.extend(angular.copy(newValue),{ updatedAt: (new Date()).toISOString() }) });
                   io.socket.put("/" + prefix  + resourceName + '/' + oldValue.id,
-                      angular.copy(newValue));
+                    angular.copy(newValue), function(data) {
+                      if (data.hasOwnPropert("errors")) {
+                        $rootScope.$broadcast(resourceName, { id: oldValue.id, verb: 'updateError', scope: $scope.$id, error: angular.copy(data), item: angular.copy(newValue)});
+                        //Reset the value to what it was before
+                        newValue = angular.copy(oldValue);
+                      } else {
+                        //Update the newValue with what we get back from the server
+                        angular.extend(newValue, data);
+                        $rootScope.$broadcast(resourceName, { id: oldValue.id, verb: 'updated', scope: $scope.$id, data: angular.copy(newValue) });
+                      }
+                    });
               }
             }
           }
