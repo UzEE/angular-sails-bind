@@ -121,7 +121,7 @@ app.factory('$sailsBind', [
           addedElements.forEach(function (item, idx) {
             if (!item.id) { //if is a brand new item w/o id from the database
               io.socket.post("/" + prefix + resourceName, item, function (data) {
-                if (data.hasOwnProperty("errors")) {
+                if (data.hasOwnProperty("error")) {
                   $rootScope.$broadcast(resourceName, { verb: 'createError', scope: $scope.$id, errors: angular.copy(data), item: angular.copy(item) });
                   //Don't add the item to the collection -- there was an error with it
                   newValues.splice(idx, 1);
@@ -159,7 +159,7 @@ app.factory('$sailsBind', [
                   oldValue.updatedAt === newValue.updatedAt) { //is not an update FROM backend
                   io.socket.put("/" + prefix  + resourceName + '/' + oldValue.id,
                     angular.copy(newValue), function(data) {
-                      if (data.hasOwnPropert("errors")) {
+                      if (data.hasOwnProperty("error")) {
                         $rootScope.$broadcast(resourceName, { id: oldValue.id, verb: 'updateError', scope: $scope.$id, error: angular.copy(data), item: angular.copy(newValue)});
                         //Reset the value to what it was before
                         newValue = angular.copy(oldValue);
