@@ -1,3 +1,6 @@
+/*! angular-sails-bind - v1.0.6 - 2015-01-11
+* https://github.com/diegopamio/angular-sails-bind
+* Copyright (c) 2015 Diego Pamio; Licensed MIT */
 /*! angular-sails-bind - v1.0.5 - 2014-05-20
  * https://github.com/diegopamio/angular-sails-bind
  * Copyright (c) 2014 Diego Pamio; Licensed MIT */
@@ -198,34 +201,35 @@ app.factory('$sailsBind', [
   }
 ]);
 
-if (!Array.prototype.find) {
-  Object.defineProperty(Array.prototype, 'find', {
-    enumerable: false,
-    configurable: true,
-    writable: true,
-    value: function(predicate) {
-      if (this == null) {
-        throw new TypeError('Array.prototype.find called on null or undefined');
-      }
-      if (typeof predicate !== 'function') {
-        throw new TypeError('predicate must be a function');
-      }
-      var list = Object(this);
-      var length = list.length >>> 0;
-      var thisArg = arguments[1];
-      var value;
 
-      for (var i = 0; i < length; i++) {
-        if (i in list) {
-          value = list[i];
-          if (predicate.call(thisArg, value, i, list)) {
-            return value;
-          }
+if (!Array.prototype.find) {
+    Object.defineProperty(Array.prototype, 'find', {
+        enumerable: false,
+        configurable: true,
+        writable: true,
+        value: function(predicate) {
+            if (this == null) {
+                throw new TypeError('Array.prototype.find called on null or undefined');
+            }
+            if (typeof predicate !== 'function') {
+                throw new TypeError('predicate must be a function');
+            }
+            var list = Object(this);
+            var length = list.length >>> 0;
+            var thisArg = arguments[1];
+            var value;
+
+            for (var i = 0; i < length; i++) {
+                if (i in list) {
+                    value = list[i];
+                    if (predicate.call(thisArg, value, i, list)) {
+                        return value;
+                    }
+                }
+            }
+            return undefined;
         }
-      }
-      return undefined;
-    }
-  });
+    });
 }
 
 if(!Array.isArray) {
@@ -235,7 +239,7 @@ if(!Array.isArray) {
 }
 
 function diff(arr1, arr2) {
-  return arr1.filter(function (i) {
-    return arr2.indexOf(i) < 0;
-  });
+    return arr1.filter(function (i) {
+        return arr2.indexOf(i) < 0;
+    });
 }
