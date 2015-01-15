@@ -1,4 +1,4 @@
-/*! angular-sails-bind - v1.0.6 - 2015-01-15
+/*! angular-sails-bind - v1.0.6 - 2015-01-11
 * https://github.com/diegopamio/angular-sails-bind
 * Copyright (c) 2015 Diego Pamio; Licensed MIT */
 /*! angular-sails-bind - v1.0.5 - 2014-05-20
@@ -150,7 +150,7 @@ app.factory('$sailsBind', [
      */
     var addCollectionWatchersToSubitemsOf = function (model, scope, resourceName, prefix) {
       model.forEach(function (item) {
-        $scope.$watchCollection(
+        scope.$watchCollection(
           resourceName + 's' + '[' + scope[resourceName + "s"].indexOf(item) + ']',
           function (newValue, oldValue) {
             if (oldValue && newValue) {
